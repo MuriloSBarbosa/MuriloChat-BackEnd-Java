@@ -1,27 +1,29 @@
 package murilo.barbosa.murilochat.controller;
 
 import jakarta.validation.constraints.NotBlank;
+import murilo.barbosa.murilochat.configuration.security.jwt.GerenciadorTokenJwt;
 import murilo.barbosa.murilochat.entity.Usuario;
 import murilo.barbosa.murilochat.service.usuario.UsuarioService;
-import murilo.barbosa.murilochat.service.usuario.dto.UsuarioCriacaoDto;
-import murilo.barbosa.murilochat.service.usuario.dto.UsuarioDetalhesDto;
+import murilo.barbosa.murilochat.service.usuario.autenticacao.dto.UsuarioLoginDto;
+import murilo.barbosa.murilochat.service.usuario.autenticacao.dto.UsuarioTokenDto;
+import murilo.barbosa.murilochat.service.usuario.dto.UsuarioInformacoesDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/usuario")
-@CrossOrigin(origins = "http://localhost:5173")
+@RequestMapping("/usuarios")
 public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
     @GetMapping
-    public ResponseEntity<List<UsuarioDetalhesDto>> listar() {
-        List<UsuarioDetalhesDto> usuarios = usuarioService.listar();
+    public ResponseEntity<List<UsuarioInformacoesDto>> listar() {
+        List<UsuarioInformacoesDto> usuarios = usuarioService.listar();
         if (usuarios.isEmpty()) {
             return ResponseEntity.status(204).build();
         }
@@ -37,9 +39,18 @@ public class UsuarioController {
         return ResponseEntity.status(201).body(usuarioService.cadastrar(nome, senha, multipartFile));
     }
 
-    @GetMapping("/verificar/{nome}")
-    public ResponseEntity<UsuarioDetalhesDto> verificarNome(@PathVariable String nome) {
-        Usuario usuario = usuarioService.verificarNome(nome);
-        return ResponseEntity.status(200).body(new UsuarioDetalhesDto(usuario));
+    @PostMapping("/login")
+    public ResponseEntity<UsuarioTokenDto> login(@RequestBody UsuarioLoginDto usuarioLoginDto) {
+        UsuarioTokenDto usuarioTokenDto = this.usuarioService.autenticar(usuarioLoginDto);
+        return ResponseEntity.status(200).body(usuarioTokenDto);
     }
+
+
+    @GetMapping("/verificar/{nome}")
+    public ResponseEntity<UsuarioInformacoesDto> verificarNome(@PathVariable String nome) {
+        Usuario usuario = usuarioService.verificarNome(nome);
+        return ResponseEntity.status(200).body(new UsuarioInformacoesDto(usuario));
+    }
+
+
 }

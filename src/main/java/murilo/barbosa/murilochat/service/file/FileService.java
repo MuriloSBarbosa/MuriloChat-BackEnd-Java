@@ -11,6 +11,7 @@ public class FileService {
 
         String projectRoot = new File("").getAbsolutePath();
         String uploadDir = "src/main/java/murilo/barbosa/murilochat/uploads";
+
         String perfilImageName = LocalDateTime.now().toString().replace(":","-") + perfilImage.getOriginalFilename();
 
         String uploadPath = String.format("%s/%s/%s/%s", projectRoot, uploadDir, pathFileType, perfilImageName);
