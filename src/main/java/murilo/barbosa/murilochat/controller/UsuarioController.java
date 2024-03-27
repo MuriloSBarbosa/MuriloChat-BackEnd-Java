@@ -23,6 +23,7 @@ public class UsuarioController {
 
     @GetMapping
     public ResponseEntity<List<UsuarioInformacoesDto>> listar() {
+        System.out.println("A PARTIR DAQUI É LISTAAAR");
         List<UsuarioInformacoesDto> usuarios = usuarioService.listar();
         if (usuarios.isEmpty()) {
             return ResponseEntity.status(204).build();

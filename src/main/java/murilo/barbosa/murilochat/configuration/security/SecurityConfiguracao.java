@@ -55,7 +55,8 @@ public class SecurityConfiguracao {
             new AntPathRequestMatcher("/usuarios/login"),
             new AntPathRequestMatcher("/usuarios", "POST"),
             new AntPathRequestMatcher("/h2-console/**"),
-            new AntPathRequestMatcher("/error/**")
+            new AntPathRequestMatcher("/error/**"),
+            new AntPathRequestMatcher("/websocket/**")
     };
 
     @Bean
@@ -73,8 +74,9 @@ public class SecurityConfiguracao {
                 .exceptionHandling(eh -> eh.authenticationEntryPoint(autenticacaoJwtEntryPoint))
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-        http.addFilterBefore(jwtAuthenticationFilterBean(), UsernamePasswordAuthenticationFilter.class);
+        System.out.println("before");
 
+        http.addFilterBefore(jwtAuthenticationFilterBean(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
